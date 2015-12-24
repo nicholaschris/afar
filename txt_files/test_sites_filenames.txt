@@ -1,0 +1,13 @@
+german_coastal_waters_elbe_river_estuary.csv
+swedish_coastal_waters_archipelago.csv
+barents_sea_and _svalbard_area_norway.csv
+rhone_river_plume_france.csv
+example.csv
+european_marine_energy_centre.csv
+german_coastal_waters_north_sea.csv
+belgian_coastal_zone.csv
+skagerrak_en_kattegat _norway.csv
+gironde_estuary_france.csv
+north_east_coast_of_england_including_blyth.csv
+loire_river_plume_and_bourgneuf_bay_france.csv
+southern_coastline_singapore.csv

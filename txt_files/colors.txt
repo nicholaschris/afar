@@ -1,0 +1,44 @@
+Red Green   Blue        HEX     Color Name      Lum     Hue Sat Lig       Color
+255 250 250     '#FFFAFA',     Snow        99      0   100 99      
+244 194 194     '#F4C2C2',     Baby Pink       82      0   69  86      
+255 105 97      '#FF6961',     Pastel Red      64      3   100 69      
+255 92  92      '#FF5C5C',     Indian Red      62      0   100 68      
+255 28  0       '#FF1C00',     Ferrari Red     54      7   100 50      
+255 8   0       '#FF0800',     Candy Apple Red     54      2   100 50      
+255 0   0       '#FF0000',     Red     54      0   100 50      
+205 92  92      '#CD5C5C',     Chestnut        53      0   53  58      
+227 66  52      '#E34234',     Cinnabar        52      5   76  55      
+215 59  62      '#D73B3E',     Jasper      50      359 66  54      
+206 22  32      '#CE1620',     Fire Engine Red     45      357 81  45      
+204 0   0       '#CC0000',     Boston University Red       43      0   100 40      
+178 34  34      '#B22222',     Firebrick       39      0   68  42      
+179 27  27      '#B31B1B',     Cornell Red     39      0   74  40      
+164 0   0       '#A40000',     Dark Candy Apple Red        34      0   100 32      
+128 0   0       '#800000',     Maroon      26      0   100 25      
+112 28  28      '#701C1C',     Prune       25      0   60  27      
+60  20  20      '#3C1414',     Dark Sienna     14      0   50  16      
+50  20  20      '#321414',     Seal Brown      12      0   43  14
+
+Red Green   Blue        HEX     Color Name      Lum     Hue Sat Lig       Color
+240 248 255     '#F0F8FF',     Alice Blue      97      208 100 97      
+161 202 241     '#A1CAF1',     Baby Blue Eyes      78      209 74  79      
+153 186 221     '#99BADD',     Carolina Blue       73      211 50  73      
+113 166 210     '#71A6D2',     Iceberg     64      207 52  63      
+100 149 237     '#6495ED',     Cornflower Blue     62      219 79  66      
+119 158 203     '#779ECB',     Dark Pastel Blue        62      212 45  63      
+91  146 229     '#5B92E5',     United Nations Blue     60      216 73  63      
+49  140 231     '#318CE7',     Bleu De France      58      210 79  55      
+0   127 255     '#007FFF',     Azure       57      210 100 50      
+93  138 168     '#5D8AA8',     Air Force Blue      53      204 30  51      
+96  130 182     '#6082B6',     Glaucous        53      216 37  55      
+70  130 180     '#4682B4',     Steel Blue      51      207 44  49      
+21  96  189     '#1560BD',     Denim       43      213 80  41      
+83  104 120     '#536878',     Cadet       40      206 18  40      
+0   71  171     '#0047AB',     Cobalt      36      215 100 34      
+15  77  146     '#0F4D92',     Yale Blue       34      212 81  32      
+8   69  126     '#08457E',     Dark Cerulean       29      209 88  26      
+54  69  79      '#36454F',     Charcoal        26      204 19  26      
+59  68  75      '#3B444B',     Arsenic     26      206 12  26      
+0   51  102     '#003366',     Dark Midnight Blue      23      210 100 20      
+0   46  99      '#002E63',     Cool Black      21      212 100 19      
+0   33  71      '#002147',     Oxford Blue     15      212 100 14

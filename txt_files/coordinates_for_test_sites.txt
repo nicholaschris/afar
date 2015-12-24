@@ -1,0 +1,15 @@
+name, lat, lon
+german coastal waters north sea, 63.00, -5.00,  48.00, 13.00
+german coastal waters elbe river estuary, 54.33, 7.58, 53.25, 10.00
+belgian coastal zone, 51.00, 2.00, 52.00, 3.45
+Scheldt Estuary
+Skagerrak en Kattegat (Norway), 54.5, 10.33, 59.8, 10.5
+Norwegian West/North Coast (Norway), 60.4, 5.22, 71.2, 31.2
+Barents Sea and Svalbard area (Norway), 69.6, 18.9, 78.00, 13.2
+Swedish coastal Waters: Archipelago, 61.8, 15.58, 57.42, 22.63
+Southern coastline Singapore, 1.576755, 103.136920, 0.845535, 104.559162
+Gironde estuary (France), 43.00, -2.00, 46.00, -0.25
+Rhone river plume (France), 43.00, 4.00, 43.42, 5.25
+Loire River plume and Bourgneuf Bay (France), 46.75, -2.50, 47.33, -1.83
+North-east coast of England including Blyth, 55.50,-2.00, 54.50, -0.75
+European Marine Energy Centre (EMEC), 59.447668, -3.512165, 58.651766, -2.069660

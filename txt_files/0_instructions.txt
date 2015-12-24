@@ -1,0 +1,14 @@
+How to use this program/script...
+
+First you need a Landsat scene that has been processed by ACOLITE.
+The outputs need to be RTOA and RRC. All bands are needed.
+
+
+Using python 3 in Ubuntu...
+
+Create a virtual environment
+Installr equiremtns into envoronment
+use the correct script
+
+ie
+python3 cloud_mask.py input_folder scene_name output_folder
