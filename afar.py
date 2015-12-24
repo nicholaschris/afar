@@ -19,7 +19,7 @@ from some_kind_of_local_config_file_that_allows_the_thresholds_to_be_changed imp
 startTime = datetime.now()
 
 """
-This script does pcp, then removes some pcp pixels using caostal band and then projects clouds 
+This script performs an adapted pcp from Fmask, then removes some pcp pixels using caostal band and ndsi threshold and then projects clouds 
 using pcp_strict and then creates cloud masks...
 """
 
@@ -83,12 +83,10 @@ def calc_basic_test_with_temp_and_cirrus(swir2=swir2, temp=temp, ndsi=ndsi, ndvi
     Seems to underestimate? So change swir to 0.0215
     """
     cirrus_test = cirrus>0.01
-    # band_7_test = swir2 > 0.03 #utils.get_truth(swir2, 0.03, '>')
-    band_7_test = swir2 > 0.0215 # From Quinten? 
+    band_7_test = swir2 > 0.0215
     btc_test = convert_to_celsius(temp) < 27.0
-    # ndsi_test = np.logical_or((ndsi < 0.8), (ndsi > -0.25)) # utils.get_truth(calc_ndsi(), 0.8, '<')
     ndsi_test = ndsi < 0.8
-    ndvi_test = ndvi < 0.8 # utils.get_truth(calc_ndvi(), 0.8, '<')
+    ndvi_test = ndvi < 0.8 
     basic_test_wo_cirrus = np.logical_and.reduce((band_7_test,
                                         ndsi_test,
                                         ndvi_test))
@@ -111,28 +109,6 @@ def calc_whiteness(blue=blue, green=green, red=red):
     whiteness = (np.abs((blue - mean_vis)/mean_vis) + 
                  np.abs((green - mean_vis)/mean_vis) +
                  np.abs((red - mean_vis)/mean_vis)
-                 )
-    # whiteness[np.where(whiteness>1)] = 1
-    return whiteness
-
-def calc_whiteness_extended(blue=blue, green=green, red=red, nir=nir, swir=swir):
-    """
-    From Zhu and Woodcock 2014.
-    Whiteness test seems to include a lot of pixels. Might be safe to exclude.
-    0.7 is the optimal threshold for Landsat 7 but haven't tried L8.
-    Whiteness does not identify cloud shadow pixels!
-    Turbid water is very "white".
-    0.75, is this too high? 
-    Atmospheric correction is approximately how much?
-    Should we get these values from Acolite?
-    Quinten suggested to add swir and nir to the test...
-    """
-    mean_vis = (blue + green + red + nir + swir) / 5
-    whiteness = (np.abs((blue - mean_vis)/mean_vis) + 
-                 np.abs((green - mean_vis)/mean_vis) +
-                 np.abs((red - mean_vis)/mean_vis) +
-                 np.abs((nir - mean_vis)/mean_vis) +
-                 np.abs((swir - mean_vis)/mean_vis)
                  )
     # whiteness[np.where(whiteness>1)] = 1
     return whiteness
@@ -161,10 +137,6 @@ def calculate_hot(blue=blue, red=red):
     So with TOA or RRC? 
     And if with RRC with or without - 0.08?
     """
-    # band = 'rtoa_'
-    # blue = get_var(band+'483')
-    # red = get_var(band+'655')
-    # hot_test = (blue - 0.5*red - 0.08)
     a = 1
     b = 0.5
     hot_test = (a*blue - b*red) - 0.08
@@ -257,89 +229,14 @@ CMR = create_cm_greens()
 CMB = create_cm_blues()
 CMG = create_cm_greys()
 
-plt.close('all')
-plt.imshow(img_rescale)
-plt.imshow(coastal > 0.2, cmap=CMO, alpha=0.8)
-title = 'coastal_result'
-plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
-
-plt.close('all')
-plt.imshow(img_rescale)
-plt.imshow(basic_test_result, cmap=CMO, alpha=0.8)
-title = 'basic_test_result'
-plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
-
-plt.close('all')
-plt.imshow(img_rescale)
-plt.imshow(hot_result, cmap=CMO, alpha=0.8)
-title = 'hot_result'
-plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
-
-plt.close('all')
-plt.imshow(img_rescale)
-plt.imshow(whiteness_result, cmap=CMO, alpha=0.8)
-title = 'whiteness_result'
-plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
-
-plt.close('all')
-plt.imshow(img_rescale)
-plt.imshow(calc_swirnir() > 0.75, cmap=CMO, alpha=0.8)
-title = 'swir_nir_result'
-plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
-
-plt.close('all')
-plt.imshow(img_rescale)
-plt.imshow(coastal > 0.2, cmap=CMO, alpha=0.8)
-title = 'coastal_test'
-plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
-
-plt.close('all')
-plt.imshow(img_rescale)
-plt.imshow(ndsi>-0.15, cmap=CMO, alpha=0.8)
-title = 'ndsi_test'
-plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
-
-plt.close('all')
-plt.imshow(img_rescale)
-plt.imshow(cirrus>0.01, cmap=CMO, alpha=0.8)
-title = 'cirrus_test'
-plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
-
 def calc_pcp():
     return np.logical_and.reduce((basic_test_result, hot_result, whiteness_result, swir_nir_result))
-
-# ndsi_test, sand_vs_cloud, coastal_test
 
 cirrus_test = cirrus>0.01
 pcp = calc_pcp()
 
 # Thresholds estimated from manually classified spectra
 pcp_strict = np.logical_and.reduce((pcp, coastal > 0.2, ndsi>-0.17))
-
-def water_test(ndvi=ndvi, nir=nir, swir=swir):
-    """
-    From Zhu and Woodcock 2014.
-    How well does it work in Extremely Turbid Waters?
-    """
-    water_condition_one = np.logical_and((ndvi < 0.01), (nir > 0.11))
-    water_condition_two = np.logical_and((ndvi < 0.1), (nir < 0.05))
-    swir_test = swir < 0.0215
-    water_test_one = np.logical_or(water_condition_one, water_condition_two)
-    water_test = water_test_one
-    water_test = np.logical_or(water_test_one, swir_test)
-    return water_test
-
-def water_test_strict(ndvi=ndvi, nir=nir, swir=swir):
-    """
-    From Zhu and Woodcock 2014.
-    How well does it work in Extremely Turbid Waters?
-    """
-    water_condition_one = np.logical_and((ndvi < 0.01), (nir > 0.11))
-    water_condition_two = np.logical_and((ndvi < 0.1), (nir < 0.05))
-    swir_test = swir < 0.0215
-    water_test_one = np.logical_or(water_condition_one, water_condition_two)
-    water_test = np.logical_and(water_test_one, swir_test)
-    return water_test
 
 def water_test_fmask(ndvi=ndvi, nir=nir, swir=swir):
     """
@@ -359,11 +256,6 @@ water = water_test_swir() # suggestion by Kevin
 mask = get_mask_bqa()
 water = ma.masked_where(mask==1, water)
 
-plt.close('all')
-plt.imshow(img_rescale)
-plt.imshow(water, cmap=CMO, alpha=0.8)
-title = 'water_test'
-plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
 
 def bresenham(origin, dest):
     # debug code
@@ -578,12 +470,6 @@ def plot_help_no_frame(data, cmap, title):
     ax.imshow(data, cmap=cmap, norm=norm)
     ax.axes.get_xaxis().set_visible(False)
     ax.axes.get_yaxis().set_visible(False)
-    # plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
-    # cax = ax.imshow(data, cmap=cmap, norm=norm)
-    # ax.set_title(title)
-    # import matplotlib.cm as cm
-    # colorbar_index(ncolors=7)
-    # plt.annotate("Created using: " + os.path.realpath(__file__), xycoords='axes fraction', xy=(0, 0), xytext=(-0.1, -0.1), fontsize=8)
     plt.savefig(storage_directory+scene_id+'_' + title + '.png', dpi=300, bbox_inches='tight', pad_inches=0)
 
 def main():
@@ -603,6 +489,61 @@ def main():
     plot_help(final_mask, my_cmap, b+'afar')
     plot_help_no_frame(final_mask, my_cmap, b+'afar_noframe')
     print("\n\nCompleted in: {0} at {1}".format(datetime.now() - startTime, datetime.now()))
+
+def plot_test_results():
+    plt.close('all')
+    plt.imshow(img_rescale)
+    plt.imshow(coastal > 0.2, cmap=CMO, alpha=0.8)
+    title = 'coastal_result'
+    plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
+
+    plt.close('all')
+    plt.imshow(img_rescale)
+    plt.imshow(basic_test_result, cmap=CMO, alpha=0.8)
+    title = 'basic_test_result'
+    plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
+
+    plt.close('all')
+    plt.imshow(img_rescale)
+    plt.imshow(hot_result, cmap=CMO, alpha=0.8)
+    title = 'hot_result'
+    plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
+
+    plt.close('all')
+    plt.imshow(img_rescale)
+    plt.imshow(whiteness_result, cmap=CMO, alpha=0.8)
+    title = 'whiteness_result'
+    plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
+
+    plt.close('all')
+    plt.imshow(img_rescale)
+    plt.imshow(calc_swirnir() > 0.75, cmap=CMO, alpha=0.8)
+    title = 'swir_nir_result'
+    plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
+
+    plt.close('all')
+    plt.imshow(img_rescale)
+    plt.imshow(coastal > 0.2, cmap=CMO, alpha=0.8)
+    title = 'coastal_test'
+    plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
+
+    plt.close('all')
+    plt.imshow(img_rescale)
+    plt.imshow(ndsi>-0.15, cmap=CMO, alpha=0.8)
+    title = 'ndsi_test'
+    plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
+
+    plt.close('all')
+    plt.imshow(img_rescale)
+    plt.imshow(cirrus>0.01, cmap=CMO, alpha=0.8)
+    title = 'cirrus_test'
+    plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
+
+    plt.close('all')
+    plt.imshow(img_rescale)
+    plt.imshow(water, cmap=CMO, alpha=0.8)
+    title = 'water_test'
+    plt.savefig(storage_directory+scene_id+'_' + title +'.png', dpi=300)
 
 if __name__ == "__main__":
     main()
